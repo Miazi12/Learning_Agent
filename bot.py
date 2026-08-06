@@ -12,6 +12,19 @@ import re
 import logging
 import tempfile
 import asyncio
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+def _run_health_server():
+    port = int(os.environ.get("PORT", 10000))
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"Bot is running")
+        def log_message(self, format, *args):
+            pass
+    HTTPServer(("0.0.0.0", port), Handler).serve_forever()
 
 from telegram import Update
 from telegram.ext import (
@@ -184,7 +197,8 @@ def main() -> None:
         handle_media
     ))
 
-    logger.info("Bot চালু হচ্ছে...")
+   threading.Thread(target=_run_health_server, daemon=True).start()
+logger.info("Bot চালু হচ্ছে...")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
