@@ -1,0 +1,5 @@
+.env
+__pycache__/
+*.pyc
+my_learning_notes/
+.git/
