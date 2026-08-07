@@ -86,7 +86,7 @@ def download_audio_for_whisper(url: str, out_dir: str | None = None) -> str:
     out_template = os.path.join(out_dir, "%(id)s.%(ext)s")
 
     ydl_opts = {
-        "format": "bestaudio/best",
+        "format": "bestaudio[ext=m4a]/bestaudio/best",
         "outtmpl": out_template,
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
