@@ -10,6 +10,8 @@ import os
 import tempfile
 from urllib.parse import urlparse, parse_qs
 
+COOKIES_PATH = "/etc/secrets/cookies.txt"
+
 
 def extract_video_id(url: str) -> str | None:
     """YouTube URL থেকে video ID বের করে"""
@@ -58,7 +60,10 @@ def get_video_title(url: str) -> str | None:
     """yt-dlp দিয়ে শুধু metadata (title) বের করে, ডাউনলোড না করে"""
     try:
         import yt_dlp
-        with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl:
+        opts = {"quiet": True, "skip_download": True}
+        if os.path.exists(COOKIES_PATH):
+            opts["cookiefile"] = COOKIES_PATH
+        with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
             return info.get("title")
     except Exception:
@@ -85,7 +90,10 @@ def download_audio_for_whisper(url: str, out_dir: str | None = None) -> str:
         }],
         "quiet": True,
     }
+    if os.path.exists(COOKIES_PATH):
+        ydl_opts["cookiefile"] = COOKIES_PATH
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
         video_id = info["id"]
-    return os.path.join(out_dir, f"{video_id}.mp3")      
+        return os.path.join(out_dir, f"{video_id}.mp3")
