@@ -7,10 +7,15 @@ YouTube link থেকে transcript বের করার চেষ্টা �
 
 import re
 import os
+import shutil
 import tempfile
 from urllib.parse import urlparse, parse_qs
 
-COOKIES_PATH = "/etc/secrets/cookies.txt"
+_SECRET_COOKIES = "/etc/secrets/cookies.txt"
+COOKIES_PATH = "/tmp/cookies.txt"
+
+if os.path.exists(_SECRET_COOKIES) and not os.path.exists(COOKIES_PATH):
+    shutil.copyfile(_SECRET_COOKIES, COOKIES_PATH)
 
 
 def extract_video_id(url: str) -> str | None:
