@@ -94,7 +94,7 @@ def download_audio_for_whisper(url: str, out_dir: str | None = None) -> str:
             "preferredquality": "128",
         }],
         "quiet": True,
-        "extractor_args": {"youtube": {"player_client": ["tv"]}},
+        "extractor_args": {"youtube": {"player_client": ["tv", "web", "android"]}},
     }
     if os.path.exists(COOKIES_PATH):
         ydl_opts["cookiefile"] = COOKIES_PATH
