@@ -65,7 +65,11 @@ def get_video_title(url: str) -> str | None:
     """yt-dlp দিয়ে শুধু metadata (title) বের করে, ডাউনলোড না করে"""
     try:
         import yt_dlp
-        opts = {"quiet": True, "skip_download": True}
+        opts = {
+            "quiet": True,
+            "skip_download": True,
+            "extractor_args": {"youtube": {"player_client": ["android"]}},
+        }
         if os.path.exists(COOKIES_PATH):
             opts["cookiefile"] = COOKIES_PATH
         with yt_dlp.YoutubeDL(opts) as ydl:
@@ -94,6 +98,7 @@ def download_audio_for_whisper(url: str, out_dir: str | None = None) -> str:
             "preferredquality": "128",
         }],
         "quiet": True,
+        "extractor_args": {"youtube": {"player_client": ["android"]}},
     }
     if os.path.exists(COOKIES_PATH):
         ydl_opts["cookiefile"] = COOKIES_PATH
